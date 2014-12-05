@@ -1,4 +1,4 @@
-require_dependency 'application_helper' if ENV['RAILS_ENV'] == 'production'
+require_dependency 'application_helper'
 require 'message'
 
 module BoardsWatchers
