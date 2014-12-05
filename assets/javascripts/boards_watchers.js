@@ -1,7 +1,8 @@
 function VVK_getWatchersCheckBoxes(watchers_dom_id) {
-  var bw_users=$(watchers_dom_id+'-users');
-
-  return bw_users == null ? null : $(bw_users + "input:checkbox");
+  var selector = '#' + watchers_dom_id+'-users';
+  var bw_users = $(selector);
+  var checkboxes = bw_users == null ? null : $(selector + " input:checkbox");
+  return checkboxes;
 }
 
 function toggleWatchersCheckBoxes(ids_to_toggle_str,on_off_str,watchers_dom_id) {
