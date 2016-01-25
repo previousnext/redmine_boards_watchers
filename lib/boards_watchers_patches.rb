@@ -1,5 +1,6 @@
 require_dependency 'application_helper' if ENV['RAILS_ENV'] == 'production'
 require 'message'
+require 'redmine/pagination'
 
 module BoardsWatchers
   module Patches
@@ -69,37 +70,21 @@ module BoardsWatchers
       end
     end
 
-    if Redmine::VERSION::MAJOR >= 2
-      module BoardsControllerPatch
-        def self.included(base) # :nodoc:
-          base.send(:include, InstanceMethods)
-          base.class_eval do
-            unloadable
 
-            alias_method_chain :show, :sp
-          end
-        end
+    module MessagesControllerPatch
+      def self.included(base) # :nodoc:
+        base.send(:include, InstanceMethods)
+        base.class_eval do
+          unloadable
 
-        module InstanceMethods
-          require_dependency File.expand_path('../../inc/bw_boards_controller.rb', __FILE__)
+          alias_method_chain :new, :watchers
+          alias_method_chain :edit, :watchers
+          alias_method_chain :reply, :watchers
         end
       end
 
-      module MessagesControllerPatch
-        def self.included(base) # :nodoc:
-          base.send(:include, InstanceMethods)
-          base.class_eval do
-            unloadable
-
-            alias_method_chain :new, :watchers
-            alias_method_chain :edit, :watchers
-            alias_method_chain :reply, :watchers
-          end
-        end
-
-        module InstanceMethods
-          require File.expand_path('../../inc/bw_messages_controller.rb', __FILE__)
-        end
+      module InstanceMethods
+        require File.expand_path('../../inc/bw_messages_controller.rb', __FILE__)
       end
     end
 
@@ -117,10 +102,6 @@ if (Rails::VERSION::MAJOR < 3 && ENV['RAILS_ENV'] == 'production') || (Rails::VE
 end
 
 if Redmine::VERSION::MAJOR >= 2
-  unless BoardsController.included_modules.include? BoardsWatchers::Patches::BoardsControllerPatch
-    BoardsController.send(:include, BoardsWatchers::Patches::BoardsControllerPatch)
-  end
-
   unless MessagesController.included_modules.include? BoardsWatchers::Patches::MessagesControllerPatch
     MessagesController.send(:include, BoardsWatchers::Patches::MessagesControllerPatch)
   end
