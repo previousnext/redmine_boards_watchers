@@ -62,7 +62,7 @@ class BoardsWatchersController < ApplicationController
 
     if request.post?
       watcher_users=(params['watcher_user_ids'] || []).collect do |w|
-        u=User.find_by_id(w.to_i)
+        u=User.find_by(id: w.to_i)
         (u && u.active? ? u : nil)
       end
       watcher_users.compact!
@@ -92,9 +92,9 @@ private
 
   def setup_environment
     @project=Project.find(params[:project_id])
-    @board=Board.find_by_id(params[:board_id]) if params[:board_id]
+    @board=Board.find_by(id: params[:board_id]) if params[:board_id]
     render_404 unless @board
-    @topic=@board.topics.find_by_id(params[:topic_id]) if params[:topic_id]
+    @topic=@board.topics.find_by(id: params[:topic_id]) if params[:topic_id]
   rescue ActiveRecord::RecordNotFound
     render_404
   end
@@ -102,7 +102,7 @@ private
   def setup_environment_issues
     @project=nil
     unless params[:issues].blank?
-      @issues=Issue.find_all_by_id(params[:issues])
+      @issues=Issue.where(id: params[:issues])
       @project=@issues[0].project if @issues.size > 0
     else
       @issues=nil
