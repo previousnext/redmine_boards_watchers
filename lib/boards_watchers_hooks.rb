@@ -77,7 +77,7 @@ private
     end
 
     if url.is_a?(Hash) && Rails::VERSION::MAJOR >= 3 && Redmine::Utils::relative_url_root != ''
-      url="#{Redmine::Utils::relative_url_root}#{url_for(url.merge(:only_path => true))}"
+      url="#{url_for(url.merge(:only_path => true))}"
     end
     link_to h(name), url, options
   end
