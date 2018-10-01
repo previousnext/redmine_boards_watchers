@@ -6,7 +6,7 @@
 <%# - watched_project - project from which retrieve list of watchers, could be omitted %>
 
 <% content_for :header_tags do %>
-  <%= javascript_include_tag('boards_watchers.js', :plugin => 'redmine_boards_watchers') %>
+  <%= javascript_include_tag('boards_watchers.js', plugin: BW_AssetHelpers::PLUGIN_NAME.to_s) %>
 <% end %>
 
 <% project = defined?(watched_project).nil? ? @project : watched_project%>
